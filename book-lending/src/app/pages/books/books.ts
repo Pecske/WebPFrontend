@@ -19,7 +19,7 @@ export class BooksComponent {
   loading = signal(false);
   error = signal<string | null>(null);
 
-  totalPages = computed(() => Math.max(1, Math.ceil(this.total() / this.pageSize())));
+  totalPages = computed(() => Math.max(1, Math.floor(this.total() / this.pageSize())));
   hasPrev = computed(() => this.page() > 1);
   hasNext = computed(() => this.page() < this.totalPages());
   pageNumbers = computed(() => Array.from({ length: this.totalPages() }, (_, i) => i + 1));
@@ -31,7 +31,8 @@ export class BooksComponent {
   load(): void {
     this.loading.set(true);
     this.error.set(null);
-    this.bookService.list(this.page(), this.pageSize()).subscribe({
+    const start = this.page() == 1 ? 1 : this.page() * this.pageSize();
+    this.bookService.list(start, this.pageSize()).subscribe({
       next: res => {
         this.books.set(res.data);
         this.total.set(res.paging?.total);

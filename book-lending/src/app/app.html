@@ -8,7 +8,7 @@
     <nav class="nav">
       @if (auth.isLoggedIn()) {
         <a routerLink="/books" routerLinkActive="active">Könyvek</a>
-        <span class="user">👤 {{ auth.user() }}</span>
+        <span class="user">👤 {{ auth.user()?.email }}</span>
         <button class="btn-link" (click)="logout()">Kijelentkezés</button>
       } @else {
         <a routerLink="/login" routerLinkActive="active">Belépés</a>
