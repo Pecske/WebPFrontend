@@ -1,0 +1,47 @@
+<section class="books-page">
+  <header class="page-header">
+    <h1>Könyvtár</h1>
+    <p class="muted">Böngéssz a katalógusban és kölcsönözz ki egy könyvet.</p>
+  </header>
+
+  @if (loading()) {
+    <div class="state">Betöltés...</div>
+  } @else if (error()) {
+    <div class="state alert">{{ error() }}</div>
+  } @else {
+    <div class="grid">
+      @for (book of books(); track book.id) {
+        <article class="book-card" [class.unavailable]="book.isBorrowed">
+          <div class="body">
+            <h3>{{ book.title }}</h3>
+            <p class="author">{{ book.author }} &middot; {{ book.dateOfPublication }}</p>
+            <p class="desc">{{ book.description }}</p>
+          </div>
+          <div class="actions">
+            @if (!book.isBorrowed) {
+              <a class="btn primary" [routerLink]="['/books', book.id, 'borrow']">Kölcsönzés</a>
+            } @else {
+              <button class="btn" disabled>Nem elérhető</button>
+            }
+          </div>
+        </article>
+      }
+    </div>
+
+    <nav class="pager" aria-label="Lapozás">
+      <button (click)="prev()" [disabled]="!hasPrev()" aria-label="Előző oldal">‹ Előző</button>
+      <ul class="pages">
+        @for (n of pageNumbers(); track n) {
+          <li>
+            <button (click)="goTo(n)" [class.active]="n === page()">{{ n }}</button>
+          </li>
+        }
+      </ul>
+      <button (click)="next()" [disabled]="!hasNext()" aria-label="Következő oldal">Következő ›</button>
+    </nav>
+
+    <p class="meta">
+      Összesen {{ total() }} könyv &middot; {{ page() }} / {{ totalPages() }} oldal
+    </p>
+  }
+</section>

@@ -1,0 +1,78 @@
+<section class="borrow-page">
+  <a class="back" routerLink="/books">‹ Vissza a katalógushoz</a>
+
+  @if (loading()) {
+    <div class="state">Betöltés...</div>
+  } @else if (error() && !book()) {
+    <div class="state alert">{{ error() }}</div>
+  } @else if (book(); as b) {
+    <div class="layout">
+      <aside class="book-preview">
+        <h2>{{ b.title }}</h2>
+        <p class="author">{{ b.author }} &middot; {{ b.dateOfPublication }}</p>
+        <p class="desc">{{ b.description }}</p>
+        <p class="status" [class.ok]="!b.isBorrowed" [class.no]="b.isBorrowed">
+          {{ !b.isBorrowed ? 'Elérhető kölcsönzésre' : 'Jelenleg nem elérhető' }}
+        </p>
+      </aside>
+
+      <div class="form-area">
+        @if (loan(); as l) {
+          <div class="success">
+            <h2>Sikeres kölcsönzés!</h2>
+            <p>A(z) <strong>{{ b.title }}</strong> című könyvet sikeresen kikölcsönözted.</p>
+            <dl>
+              <dt>Kölcsönzés azonosítója:</dt>
+              <dd>#{{ l.id }}</dd>
+              <dt>Kölcsönzés dátuma:</dt>
+              <dd>{{ l.borrowedAt | slice:0:10 }}</dd>
+              <dt>Visszahozandó:</dt>
+              <dd>{{ l.dueDate }}</dd>
+            </dl>
+            <a class="btn primary" routerLink="/books">Vissza a könyvekhez</a>
+          </div>
+        } @else {
+          <h2>Könyv kölcsönzése</h2>
+          <p class="muted">
+            Kölcsönző: <strong>{{ auth.user() }}</strong>
+          </p>
+
+          <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+            <label>
+              <span>Visszahozatali dátum</span>
+              <input
+                type="date"
+                formControlName="dueDate"
+                [min]="minDate"
+                [max]="maxDate"
+              />
+              @if (form.controls.dueDate.touched && form.controls.dueDate.invalid) {
+                <small class="err">Adj meg egy érvényes dátumot.</small>
+              }
+            </label>
+
+            <label class="checkbox">
+              <input type="checkbox" formControlName="terms" />
+              <span>Elfogadom a kölcsönzési feltételeket, és vállalom a könyv épségét.</span>
+            </label>
+            @if (form.controls.terms.touched && form.controls.terms.invalid) {
+              <small class="err">A feltételek elfogadása kötelező.</small>
+            }
+
+            @if (error()) {
+              <div class="alert">{{ error() }}</div>
+            }
+
+            <button
+              type="submit"
+              class="btn primary"
+              [disabled]="submitting() || b.isBorrowed"
+            >
+              {{ submitting() ? 'Feldolgozás...' : 'Kölcsönzés megerősítése' }}
+            </button>
+          </form>
+        }
+      </div>
+    </div>
+  }
+</section>

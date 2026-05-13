@@ -1,0 +1,35 @@
+<div class="auth-card">
+  <h1>Bejelentkezés</h1>
+  <p class="muted">Üdv újra! Lépj be a könyvtár eléréséhez.</p>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <label>
+      <span>E-mail</span>
+      <input type="text" formControlName="email" autocomplete="email" />
+      @if (form.controls.email.touched && form.controls.email.invalid) {
+        <small class="err">Legalább 3 karakter szükséges.</small>
+      }
+    </label>
+
+    <label>
+      <span>Jelszó</span>
+      <input type="password" formControlName="password" autocomplete="current-password" />
+      @if (form.controls.password.touched && form.controls.password.invalid) {
+        <small class="err">Legalább 4 karakter szükséges.</small>
+      }
+    </label>
+
+    @if (error()) {
+      <div class="alert">{{ error() }}</div>
+    }
+
+    <button type="submit" [disabled]="loading()">
+      {{ loading() ? 'Bejelentkezés...' : 'Belépés' }}
+    </button>
+  </form>
+
+  <p class="footer">
+    Nincs még fiókod?
+    <a routerLink="/register">Regisztrálj</a>
+  </p>
+</div>

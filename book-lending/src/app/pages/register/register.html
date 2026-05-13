@@ -1,0 +1,43 @@
+<div class="auth-card">
+  <h1>Regisztráció</h1>
+  <p class="muted">Hozz létre fiókot, hogy könyveket kölcsönözhess.</p>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <label>
+      <span>Felhasználónév</span>
+      <input type="text" formControlName="name" autocomplete="name" />
+      @if (form.controls.name.touched && form.controls.name.invalid) {
+        <small class="err">Legalább 3 karakter szükséges.</small>
+      }
+    </label>
+
+    <label>
+      <span>E-mail cím</span>
+      <input type="email" formControlName="email" autocomplete="email" />
+      @if (form.controls.email.touched && form.controls.email.invalid) {
+        <small class="err">Adj meg érvényes e-mail címet.</small>
+      }
+    </label>
+
+    <label>
+      <span>Jelszó</span>
+      <input type="password" formControlName="password" autocomplete="new-password" />
+      @if (form.controls.password.touched && form.controls.password.invalid) {
+        <small class="err">Legalább 4 karakter szükséges.</small>
+      }
+    </label>
+
+    @if (error()) {
+      <div class="alert">{{ error() }}</div>
+    }
+
+    <button type="submit" [disabled]="loading()">
+      {{ loading() ? 'Regisztráció...' : 'Fiók létrehozása' }}
+    </button>
+  </form>
+
+  <p class="footer">
+    Van már fiókod?
+    <a routerLink="/login">Jelentkezz be</a>
+  </p>
+</div>

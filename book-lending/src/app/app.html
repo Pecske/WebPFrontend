@@ -1,0 +1,23 @@
+<header class="topbar">
+  <div class="inner">
+    <a class="brand" routerLink="/">
+      <span class="logo">📚</span>
+      <span>Könyvkölcsönző</span>
+    </a>
+
+    <nav class="nav">
+      @if (auth.isLoggedIn()) {
+        <a routerLink="/books" routerLinkActive="active">Könyvek</a>
+        <span class="user">👤 {{ auth.user() }}</span>
+        <button class="btn-link" (click)="logout()">Kijelentkezés</button>
+      } @else {
+        <a routerLink="/login" routerLinkActive="active">Belépés</a>
+        <a class="btn-primary" routerLink="/register" routerLinkActive="active">Regisztráció</a>
+      }
+    </nav>
+  </div>
+</header>
+
+<main class="main">
+  <router-outlet />
+</main>
